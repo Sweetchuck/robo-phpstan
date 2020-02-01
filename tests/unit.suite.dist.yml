@@ -1,0 +1,5 @@
+actor: 'UnitTester'
+modules:
+    enabled:
+        - 'Asserts'
+        - '\Sweetchuck\Robo\Phpstan\Tests\Helper\Unit'
