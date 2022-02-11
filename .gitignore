@@ -9,3 +9,5 @@
 /RoboFileAcceptance.php
 /.git-hooks.local
 /robo.yml
+
+/phpstan.neon

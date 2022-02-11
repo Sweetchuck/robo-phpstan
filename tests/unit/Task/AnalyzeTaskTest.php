@@ -7,9 +7,10 @@ namespace Sweetchuck\Robo\Phpstan\Tests\Unit\Task;
 use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyProcess;
 
 /**
- * @covers \Sweetchuck\Robo\Phpstan\Task\VersionTask<extended>
+ * @covers \Sweetchuck\Robo\Phpstan\Task\AnalyzeTask<extended>
+ * @covers \Sweetchuck\Robo\Phpstan\PhpstanTaskLoader
  */
-class VersionTaskTest extends TaskTestBase
+class AnalyzeTaskTest extends TaskTestBase
 {
 
     /**
@@ -19,13 +20,19 @@ class VersionTaskTest extends TaskTestBase
     {
         return [
             'basic' => [
-                'vendor/bin/phpstan --version',
+                'vendor/bin/phpstan analyze',
                 [],
             ],
             'with custom working directory' => [
-                'vendor/bin/phpstan --version',
+                'vendor/bin/phpstan analyze',
                 [
                     'workingDirectory' => '/foo/bar',
+                ],
+            ],
+            'level' => [
+                "vendor/bin/phpstan analyze --level='2'",
+                [
+                    'level' => 2,
                 ],
             ],
         ];
@@ -38,7 +45,7 @@ class VersionTaskTest extends TaskTestBase
      */
     public function testGetCommand(string $expected, array $options): void
     {
-        $task = $this->taskBuilder->taskPhpstanVersion($options);
+        $task = $this->taskBuilder->taskPhpstanAnalyze($options);
 
         $this->tester->assertSame($expected, $task->getCommand());
     }
@@ -48,19 +55,47 @@ class VersionTaskTest extends TaskTestBase
      */
     public function casesRunSuccess(): array
     {
+        $reportErrors = [
+            'totals' => [
+                'errors' => 0,
+                'file_errors' => 1,
+            ],
+            'files' => [
+                'a.php' => [
+                    'errors' => 1,
+                    'messages' => [
+                        [
+                            'message' => '',
+                            'line' => 42,
+                            'ignorable' => true,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
         return [
             'basic' => [
                 [
+                    'exitCode' => 1,
                     'assets' => [
-                        'version.full' => '1.4.6',
+                        'report.raw' => $reportErrors,
                     ],
                 ],
-                [],
+                [
+                    'errorFormat' => 'json',
+                ],
                 [
                     [
-                        'exitCode' => 0,
-                        'stdOutput' => 'PHPStan - PHP Static Analysis Tool 1.4.6',
-                        'stdError' => '',
+                        'exitCode' => 1,
+                        'stdOutput' => json_encode($reportErrors),
+                        'stdError' => implode("\n", [
+                            'Note: Using configuration file /dir/phpstan.neon.',
+                            '27/27 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%',
+                            '',
+                            '[ERROR] Found 1 errors',
+                            '',
+                        ]),
                     ],
                 ],
             ],
@@ -77,7 +112,7 @@ class VersionTaskTest extends TaskTestBase
     public function testRunSuccess(array $expected, array $options, array $processProphecy): void
     {
         $expected += [
-            'wasSuccessful' => true,
+            'exitCode' => 0,
             'assets' => [],
         ];
 
@@ -85,12 +120,12 @@ class VersionTaskTest extends TaskTestBase
 
         $result = $this
             ->taskBuilder
-            ->taskPhpstanVersion($options)
+            ->taskPhpstanAnalyze($options)
             ->run();
 
         $this->tester->assertSame(
-            $expected['wasSuccessful'],
-            $result->wasSuccessful(),
+            $expected['exitCode'],
+            $result->getExitCode(),
             'task exit code'
         );
 

@@ -9,7 +9,7 @@ use Sweetchuck\Robo\Phpstan\Tests\Helper\RoboFiles\PhpstanRoboFile;
 
 class VersionTaskCest
 {
-    public function version(AcceptanceTester $tester)
+    public function version(AcceptanceTester $tester): void
     {
         $id = 'version';
         $tester->runRoboTask(

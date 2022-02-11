@@ -114,7 +114,7 @@ trait ExecOptions
     }
     // endregion
 
-    // region Option - processTimeout.
+    // region Option - processTimeout
     protected ?int $processTimeout = null;
 
     public function getProcessTimeout(): ?int
@@ -152,6 +152,140 @@ trait ExecOptions
     }
     // endregion
 
+    // region Option - hideStdError
+    protected bool $hideStdError = true;
+
+    public function getHideStdError(): bool
+    {
+        return $this->hideStdError;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setHideStdError(bool $hideStdError)
+    {
+        $this->hideStdError = $hideStdError;
+
+        return $this;
+    }
+    // endregion
+
+    // region Option - noProgress
+    protected bool $noProgress = false;
+
+    public function getNoProgress(): bool
+    {
+        return $this->noProgress;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setNoProgress(bool $noProgress)
+    {
+        $this->noProgress = $noProgress;
+
+        return $this;
+    }
+    // endregion
+
+    // region Option - debug
+    protected bool $debug = false;
+
+    public function getDebug(): bool
+    {
+        return $this->debug;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setDebug(bool $debug)
+    {
+        $this->debug = $debug;
+
+        return $this;
+    }
+    // endregion
+
+    // region Option - quiet
+    protected bool $quiet = false;
+
+    public function getQuiet(): bool
+    {
+        return $this->quiet;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setQuiet(bool $quiet)
+    {
+        $this->quiet = $quiet;
+
+        return $this;
+    }
+    // endregion
+
+    // region Option - ansi
+    protected ?bool $ansi = null;
+
+    public function getAnsi(): ?bool
+    {
+        return $this->ansi;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setAnsi(?bool $ansi)
+    {
+        $this->ansi = $ansi;
+
+        return $this;
+    }
+    // endregion
+
+    // region Option - noInteraction
+    protected bool $noInteraction = false;
+
+    public function getNoInteraction(): bool
+    {
+        return $this->noInteraction;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setNoInteraction(bool $noInteraction)
+    {
+        $this->noInteraction = $noInteraction;
+
+        return $this;
+    }
+    // endregion
+
+    // region Option - verbose
+    protected int $verbose = 0;
+
+    public function getVerbose(): int
+    {
+        return $this->verbose;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setVerbose(int $verbose)
+    {
+        assert($verbose > 0 && $verbose < 4, "Allowed values: 0-3; Current value: $verbose");
+        $this->verbose = $verbose;
+
+        return $this;
+    }
+    // endregion
+
     /**
      * @param array<string, mixed> $options
      *
@@ -181,6 +315,34 @@ trait ExecOptions
 
         if (array_key_exists('hideStdOutput', $options)) {
             $this->setHideStdOutput($options['hideStdOutput']);
+        }
+
+        if (array_key_exists('hideStdError', $options)) {
+            $this->setHideStdError($options['hideStdError']);
+        }
+
+        if (array_key_exists('noProgress', $options)) {
+            $this->setNoProgress($options['noProgress']);
+        }
+
+        if (array_key_exists('debug', $options)) {
+            $this->setDebug($options['debug']);
+        }
+
+        if (array_key_exists('quiet', $options)) {
+            $this->setQuiet($options['quiet']);
+        }
+
+        if (array_key_exists('ansi', $options)) {
+            $this->setAnsi($options['ansi']);
+        }
+
+        if (array_key_exists('noInteraction', $options)) {
+            $this->setNoInteraction($options['noInteraction']);
+        }
+
+        if (array_key_exists('verbose', $options)) {
+            $this->setVerbose($options['verbose']);
         }
 
         return $this;
@@ -215,6 +377,31 @@ trait ExecOptions
             'hideStdOutput' => [
                 'type' => 'other',
                 'value' => $this->getHideStdOutput(),
+            ],
+            'no-progress' => [
+                'type' => 'option:flag',
+                'value' => $this->getNoProgress(),
+            ],
+            'debug' => [
+                'type' => 'option:flag',
+                'value' => $this->getDebug(),
+            ],
+            'quiet' => [
+                'type' => 'option:flag',
+                'value' => $this->getQuiet(),
+            ],
+            'ansi' => [
+                'type' => 'option:tri-state',
+                'value' => $this->getAnsi(),
+            ],
+            'no-interaction' => [
+                'type' => 'option:flag',
+                'value' => $this->getNoInteraction(),
+            ],
+            'verbose' => [
+                'cliName' => 'v',
+                'type' => 'option:verbose',
+                'value' => $this->getVerbose(),
             ],
         ];
 

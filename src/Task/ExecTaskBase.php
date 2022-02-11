@@ -60,6 +60,7 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
             ->getCommandInit()
             ->getCommandPhpExecutable()
             ->getCommandPhpstanExecutable()
+            ->getCommandPhpstanCommand()
             ->getCommandPhpstanOptions()
             ->getCommandPhpstanArguments()
             ->getCommandBuild();
@@ -105,6 +106,17 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
     /**
      * @return $this
      */
+    protected function getCommandPhpstanCommand()
+    {
+        if (!empty($this->options['command']['value'])) {
+            $this->cmdPattern[] = $this->options['command']['value'];
+        }
+
+        return $this;
+    }
+    /**
+     * @return $this
+     */
     protected function getCommandPhpstanOptions()
     {
         foreach ($this->options as $optionName => $option) {
@@ -115,11 +127,34 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
             $cliName = $option['cliName'] ?? $optionName;
             switch ($option['type']) {
                 case 'option:flag':
-                    if ($option['value'] ?? null !== false) {
+                    if ($option['value'] !== false) {
                         $this->cmdPattern[] = "--$cliName";
                     }
-
                     break;
+
+                case 'option:tri-state':
+                    if ($option['value'] === true) {
+                        $this->cmdPattern[] = "--$cliName";
+                    } elseif ($option['value'] === false) {
+                        $this->cmdPattern[] = "--no-$cliName";
+                    }
+                    break;
+
+                case 'option:value-required':
+                    if ($option['value'] !== null) {
+                        $this->cmdPattern[] = "--$cliName=%s";
+                        $this->cmdArgs[] = escapeshellarg((string) $option['value']);
+                    }
+                    break;
+
+                case 'option:verbose':
+                    if ($option['value'] > 0) {
+                        $this->cmdPattern[] = '-' . str_repeat($cliName, min($option['value'], 3));
+                    }
+                    break;
+
+                default:
+                    throw new \InvalidArgumentException("Option type {$option['type']} is not supported");
             }
         }
 
@@ -141,6 +176,13 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
                     if ($option['value'] !== null) {
                         $this->cmdPattern[] = '%s';
                         $this->cmdArgs[] = escapeshellarg($option['value']);
+                    }
+                    break;
+
+                case 'argument:multiple':
+                    foreach ($option['value'] as $value) {
+                        $this->cmdPattern[] = '%s';
+                        $this->cmdArgs[] = escapeshellarg($value);
                     }
                     break;
             }
@@ -221,7 +263,9 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
                 break;
 
             case Process::ERR:
-                $this->printTaskError($data);
+                if (!$this->getHideStdError()) {
+                    $this->printTaskError($data);
+                }
                 break;
         }
     }

@@ -34,7 +34,9 @@
     "repositories": {},
     "require": {
         "php": ">=7.4",
-        "consolidation/robo": "^3.0"
+        "ext-json": "*",
+        "consolidation/robo": "^3.0",
+        "sweetchuck/lint-report": "1.x-dev"
     },
     "require-dev": {
         "codeception/codeception": "^4.0",
@@ -61,7 +63,10 @@
             "Sweetchuck\\Robo\\Phpstan\\Tests\\Acceptance\\": "tests/acceptance/",
             "Sweetchuck\\Robo\\Phpstan\\Tests\\Unit\\": "tests/unit/",
             "Sweetchuck\\Robo\\Phpstan\\Tests\\": "tests/_support/"
-        }
+        },
+        "files": [
+            "RoboFile.php"
+        ]
     },
     "suggest": {
         "phpstan/phpstan": "*"

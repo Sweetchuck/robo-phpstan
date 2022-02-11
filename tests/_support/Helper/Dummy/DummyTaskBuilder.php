@@ -11,6 +11,7 @@ use Robo\Common\TaskIO;
 use Robo\Contract\BuilderAwareInterface;
 use Robo\State\StateAwareTrait;
 use Robo\TaskAccessor;
+use Robo\Tasks;
 use Sweetchuck\Robo\Phpstan\PhpstanTaskLoader;
 
 class DummyTaskBuilder implements BuilderAwareInterface, ContainerAwareInterface
@@ -20,14 +21,24 @@ class DummyTaskBuilder implements BuilderAwareInterface, ContainerAwareInterface
     use StateAwareTrait;
     use TaskIO;
     use PhpstanTaskLoader {
+        taskPhpstanAnalyze as public;
         taskPhpstanVersion as public;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function collectionBuilder(): CollectionBuilder
     {
-        return CollectionBuilder::create($this->getContainer(), null);
+        return CollectionBuilder::create(
+            $this->getContainer(),
+            new Tasks(),
+        );
     }
 
+    /**
+     * @return \Symfony\Component\Console\Output\OutputInterface
+     */
     protected function output()
     {
         return $this->getContainer()->get('output');

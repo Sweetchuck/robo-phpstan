@@ -10,6 +10,7 @@ use Psr\Container\ContainerInterface;
 use Robo\Collection\CollectionBuilder;
 use Robo\Config\Config as RoboConfig;
 use Robo\Robo;
+use Robo\Tasks;
 use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyOutput;
 use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyProcess;
 use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyProcessHelper;
@@ -31,6 +32,8 @@ class TaskTestBase extends Unit
     protected DummyTaskBuilder $taskBuilder;
 
     /**
+     * @return void
+     *
      * @SuppressWarnings("CamelCaseMethodName")
      */
     public function _before()
@@ -54,7 +57,8 @@ class TaskTestBase extends Unit
         Robo::configureContainer($this->container, $application, $this->config, $input, $output);
         $this->container->share('logger', BufferingLogger::class);
 
-        $this->builder = CollectionBuilder::create($this->container, null);
+        $commandFile = new Tasks();
+        $this->builder = CollectionBuilder::create($this->container, $commandFile);
         $this->taskBuilder = new DummyTaskBuilder();
         $this->taskBuilder->setContainer($this->container);
         $this->taskBuilder->setBuilder($this->builder);

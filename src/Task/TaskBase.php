@@ -120,7 +120,7 @@ abstract class TaskBase extends BaseTask implements ContainerAwareInterface, Out
             $this,
             $this->getTaskResultCode(),
             $this->getTaskResultMessage(),
-            $this->getAssetsWithPrefixedNames()
+            $this->getAssetsWithPrefixedNames(),
         );
     }
 

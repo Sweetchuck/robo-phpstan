@@ -1,0 +1,49 @@
+{
+  "totals": {
+    "errors": 0,
+    "file_errors": 4
+  },
+  "files": {
+    "/project/src/PhpstanTaskLoader.php (in context of class Sweetchuck\\Robo\\Phpstan\\Tests\\Helper\\Dummy\\DummyTaskBuilder)": {
+      "errors": 1,
+      "messages": [
+        {
+          "message": "Call to an undefined method Robo\\Collection\\CollectionBuilder|Sweetchuck\\Robo\\Phpstan\\Task\\AnalyzeTask::setOptions().",
+          "line": 21,
+          "ignorable": true
+        }
+      ]
+    },
+    "/project/src/PhpstanTaskLoader.php (in context of class Sweetchuck\\Robo\\Phpstan\\Tests\\Helper\\RoboFiles\\PhpstanRoboFile)": {
+      "errors": 1,
+      "messages": [
+        {
+          "message": "Call to an undefined method Robo\\Collection\\CollectionBuilder|Sweetchuck\\Robo\\Phpstan\\Task\\AnalyzeTask::setOptions().",
+          "line": 21,
+          "ignorable": true
+        }
+      ]
+    },
+    "/project/tests/_support/Helper/Dummy/DummyTaskBuilder.php": {
+      "errors": 1,
+      "messages": [
+        {
+          "message": "Ignored error pattern #^Call to an undefined method Robo\\\\Collection\\\\CollectionBuilder\\|Sweetchuck\\\\Robo\\\\Phpstan\\\\Task\\\\VersionTask\\:\\:setContainer\\(\\)\\.$# in path /project/tests/_support/Helper/Dummy/DummyTaskBuilder.php was not matched in reported errors.",
+          "line": null,
+          "ignorable": false
+        }
+      ]
+    },
+    "/project/tests/_support/Helper/RoboFiles/PhpstanRoboFile.php": {
+      "errors": 1,
+      "messages": [
+        {
+          "message": "Ignored error pattern #^Call to an undefined method Robo\\\\Collection\\\\CollectionBuilder\\|Sweetchuck\\\\Robo\\\\Phpstan\\\\Task\\\\VersionTask\\:\\:setContainer\\(\\)\\.$# in path /project/tests/_support/Helper/RoboFiles/PhpstanRoboFile.php was not matched in reported errors.",
+          "line": null,
+          "ignorable": false
+        }
+      ]
+    }
+  },
+  "errors": []
+}

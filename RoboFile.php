@@ -9,11 +9,13 @@ use Psr\Log\LoggerAwareTrait;
 use Robo\Collection\CollectionBuilder;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
+use Robo\Contract\TaskInterface;
 use Robo\Tasks;
 use Sweetchuck\LintReport\Reporter\BaseReporter;
 use Sweetchuck\Robo\Git\GitTaskLoader;
 use Sweetchuck\Robo\Phpcs\PhpcsTaskLoader;
 use Sweetchuck\Robo\PhpMessDetector\PhpmdTaskLoader;
+use Sweetchuck\Robo\Phpstan\PhpstanTaskLoader;
 use Sweetchuck\Utils\Filter\ArrayFilterEnabled;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,9 +31,16 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
     use GitTaskLoader;
     use PhpcsTaskLoader;
     use PhpmdTaskLoader;
+    use PhpstanTaskLoader;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $composerInfo = [];
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $codeceptionInfo = [];
 
     /**
@@ -73,7 +82,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
     /**
      * @hook pre-command @initLintReporters
      */
-    public function initLintReporters()
+    public function initLintReporters(): void
     {
         $lintServices = BaseReporter::getServices();
         $container = $this->getContainer();
@@ -83,7 +92,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
             }
 
             if ($container instanceof LeagueContainer) {
-                $container->share($name, $class);
+                $container->add($name, $class, false);
             }
         }
     }
@@ -110,6 +119,8 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
 
     /**
      * Run tests.
+     *
+     * @param string[] $suiteNames
      *
      * @command test
      */
@@ -159,7 +170,25 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         return $this->getTaskPhpmdLint();
     }
 
-    protected function errorOutput(): ?OutputInterface
+    /**
+     * @command lint:phpstan
+     *
+     * @initLintReporters
+     */
+    public function lintPhpstan(): TaskInterface
+    {
+        /** @var \Sweetchuck\LintReport\Reporter\VerboseReporter $verboseReporter */
+        $verboseReporter = $this->getContainer()->get('lintVerboseReporter');
+        $verboseReporter->setFilePathStyle('relative');
+
+        return $this
+            ->taskPhpstanAnalyze()
+            ->setNoProgress(true)
+            ->setErrorFormat('json')
+            ->addLintReporter('lintVerboseReporter', $verboseReporter);
+    }
+
+    protected function errorOutput(): OutputInterface
     {
         $output = $this->output();
 
@@ -266,11 +295,11 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         $local = [];
 
         if (is_readable('codeception.dist.yml')) {
-            $dist = Yaml::parse(file_get_contents('codeception.dist.yml'));
+            $dist = Yaml::parse(file_get_contents('codeception.dist.yml') ?: '{}');
         }
 
         if (is_readable('codeception.yml')) {
-            $local = Yaml::parse(file_get_contents('codeception.yml'));
+            $local = Yaml::parse(file_get_contents('codeception.yml') ?: '{}');
         }
 
         $this->codeceptionInfo = array_replace_recursive($default, $dist, $local);
@@ -278,6 +307,11 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         return $this;
     }
 
+    /**
+     * @param string[] $suiteNames
+     *
+     * @return \Robo\Collection\CollectionBuilder
+     */
     protected function getTaskCodeceptRunSuites(array $suiteNames = []): CollectionBuilder
     {
         if (!$suiteNames) {
@@ -285,7 +319,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         }
 
         $phpExecutables = array_filter(
-            $this->getConfig()->get('php.executables'),
+            (array) $this->getConfig()->get('php.executables'),
             new ArrayFilterEnabled(),
         );
 
@@ -299,6 +333,12 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         return $cb;
     }
 
+    /**
+     * @param string $suite
+     * @param array<string, mixed> $php
+     *
+     * @return \Robo\Collection\CollectionBuilder
+     */
     protected function getTaskCodeceptRunSuite(string $suite, array $php): CollectionBuilder
     {
         $this->initCodeceptionInfo();
@@ -404,7 +444,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         $command = vsprintf($cmdPattern, $cmdArgs);
 
         return $cb
-            ->addCode(function () use ($command) {
+            ->addCode(function () use ($command, $php) {
                 $this->output()->writeln(strtr(
                     '<question>[{name}]</question> runs <info>{command}</info>',
                     [
@@ -416,7 +456,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
                 $process = Process::fromShellCommandline(
                     $command,
                     null,
-                    $php['envVar'] ?? null,
+                    $php['envVars'] ?? null,
                     null,
                     null,
                 );
@@ -435,10 +475,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
             });
     }
 
-    /**
-     * @return \Sweetchuck\Robo\Phpcs\Task\PhpcsLintFiles|\Robo\Collection\CollectionBuilder
-     */
-    protected function getTaskPhpcsLint()
+    protected function getTaskPhpcsLint(): CollectionBuilder
     {
         $options = [
             'failOn' => 'warning',
@@ -480,7 +517,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         return $this->taskPhpcsLintFiles($options);
     }
 
-    protected function getTaskPhpmdLint()
+    protected function getTaskPhpmdLint(): CollectionBuilder
     {
         $task = $this
             ->taskPhpmdLintFiles()
@@ -501,6 +538,9 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
             : 'tests/_log';
     }
 
+    /**
+     * @return string[]
+     */
     protected function getCodeceptionSuiteNames(): array
     {
         if (!$this->codeceptionSuiteNames) {
@@ -524,6 +564,9 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         return $this->codeceptionSuiteNames;
     }
 
+    /**
+     * @param string[] $suiteNames
+     */
     protected function validateArgCodeceptionSuiteNames(array $suiteNames): void
     {
         if (!$suiteNames) {
@@ -539,6 +582,9 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getPhpExecutableWithCoverage(): array
     {
         $default = [
