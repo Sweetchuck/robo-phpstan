@@ -9,25 +9,6 @@ namespace Sweetchuck\Robo\Phpstan\Option;
  */
 trait AnalyzeOptions
 {
-    // region Option - configuration
-    protected ?string $configuration = null;
-
-    public function getConfiguration(): ?string
-    {
-        return $this->configuration;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setConfiguration(?string $configuration)
-    {
-        $this->configuration = $configuration;
-
-        return $this;
-    }
-    // endregion
-
     // region Option - level
     protected ?int $level = null;
 
@@ -123,7 +104,7 @@ trait AnalyzeOptions
     }
     // endregion
 
-    // region Options - paths
+    // region Option - paths
     /**
      * @var string[]
      */
@@ -149,56 +130,6 @@ trait AnalyzeOptions
         return $this;
     }
     // endregion
-
-    //region Option - lintReporters
-    /**
-     * @var null[]|bool[]|string[]|\Sweetchuck\LintReport\ReporterInterface[]
-     */
-    protected array $lintReporters = [];
-
-    /**
-     * @return null[]|bool[]|string[]|\Sweetchuck\LintReport\ReporterInterface[]
-     */
-    public function getLintReporters(): array
-    {
-        return $this->lintReporters;
-    }
-
-    /**
-     * @param null[]|bool[]|string[]|\Sweetchuck\LintReport\ReporterInterface[] $lintReporters
-     *
-     * @return $this
-     */
-    public function setLintReporters(array $lintReporters)
-    {
-        $this->lintReporters = $lintReporters;
-
-        return $this;
-    }
-
-    /**
-     * @param string $id
-     * @param null|bool|string|\Sweetchuck\LintReport\ReporterInterface $lintReporter
-     *
-     * @return $this
-     */
-    public function addLintReporter(string $id, $lintReporter = null)
-    {
-        $this->lintReporters[$id] = $lintReporter;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function removeLintReporter(string $id)
-    {
-        unset($this->lintReporters[$id]);
-
-        return $this;
-    }
-    //endregion
 
     // region Option - failOn
     protected string $failOn = 'warning';
@@ -226,10 +157,6 @@ trait AnalyzeOptions
      */
     protected function setOptionsAnalise(array $options)
     {
-        if (array_key_exists('configuration', $options)) {
-            $this->setConfiguration($options['configuration']);
-        }
-
         if (array_key_exists('level', $options)) {
             $this->setLevel($options['level']);
         }
@@ -267,10 +194,6 @@ trait AnalyzeOptions
     protected function initOptionsAnalise()
     {
         $this->options += [
-            'configuration' => [
-                'type' => 'option:value-required',
-                'value' => $this->getConfiguration(),
-            ],
             'level' => [
                 'type' => 'option:value-required',
                 'value' => $this->getLevel(),

@@ -143,7 +143,8 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         return $this
             ->collectionBuilder()
             ->addTask($this->taskComposerValidate())
-            ->addTask($this->getTaskPhpcsLint());
+            ->addTask($this->getTaskPhpcsLint())
+            ->addTask($this->getTaskPhpstanAnalyze());
     }
 
     /**
@@ -153,7 +154,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
      *
      * @initLintReporters
      */
-    public function lintPhpcs(): CollectionBuilder
+    public function lintPhpcs(): TaskInterface
     {
         return $this->getTaskPhpcsLint();
     }
@@ -165,7 +166,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
      *
      * @initLintReporters
      */
-    public function lintPhpmd(): CollectionBuilder
+    public function lintPhpmd(): TaskInterface
     {
         return $this->getTaskPhpmdLint();
     }
@@ -177,15 +178,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
      */
     public function lintPhpstan(): TaskInterface
     {
-        /** @var \Sweetchuck\LintReport\Reporter\VerboseReporter $verboseReporter */
-        $verboseReporter = $this->getContainer()->get('lintVerboseReporter');
-        $verboseReporter->setFilePathStyle('relative');
-
-        return $this
-            ->taskPhpstanAnalyze()
-            ->setNoProgress(true)
-            ->setErrorFormat('json')
-            ->addLintReporter('lintVerboseReporter', $verboseReporter);
+        return $this->getTaskPhpstanAnalyze();
     }
 
     protected function errorOutput(): OutputInterface
@@ -475,7 +468,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
             });
     }
 
-    protected function getTaskPhpcsLint(): CollectionBuilder
+    protected function getTaskPhpcsLint(): TaskInterface
     {
         $options = [
             'failOn' => 'warning',
@@ -517,7 +510,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         return $this->taskPhpcsLintFiles($options);
     }
 
-    protected function getTaskPhpmdLint(): CollectionBuilder
+    protected function getTaskPhpmdLint(): TaskInterface
     {
         $task = $this
             ->taskPhpmdLintFiles()
@@ -527,6 +520,27 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         $task->setOutput($this->output());
 
         return $task;
+    }
+
+    protected function getTaskPhpstanAnalyze(): TaskInterface
+    {
+        /** @var \Sweetchuck\LintReport\Reporter\VerboseReporter $verboseReporter */
+        $verboseReporter = $this->getContainer()->get('lintVerboseReporter');
+        $verboseReporter->setFilePathStyle('relative');
+
+        return $this
+            ->collectionBuilder()
+            ->addTask($this->taskExec(sprintf(
+                '%s build',
+                escapeshellcmd("{$this->binDir}/codecept"),
+            )))
+            ->addTask(
+                $this
+                    ->taskPhpstanAnalyze()
+                    ->setNoProgress(true)
+                    ->setErrorFormat('json')
+                    ->addLintReporter('lintVerboseReporter', $verboseReporter)
+            );
     }
 
     protected function getLogDir(): string

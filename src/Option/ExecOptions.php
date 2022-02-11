@@ -114,6 +114,25 @@ trait ExecOptions
     }
     // endregion
 
+    // region Option - configuration
+    protected ?string $configuration = null;
+
+    public function getConfiguration(): ?string
+    {
+        return $this->configuration;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setConfiguration(?string $configuration)
+    {
+        $this->configuration = $configuration;
+
+        return $this;
+    }
+    // endregion
+
     // region Option - processTimeout
     protected ?int $processTimeout = null;
 
@@ -309,6 +328,10 @@ trait ExecOptions
             $this->setEnvVars($options['envVars']);
         }
 
+        if (array_key_exists('configuration', $options)) {
+            $this->setConfiguration($options['configuration']);
+        }
+
         if (array_key_exists('processTimeout', $options)) {
             $this->setProcessTimeout($options['processTimeout']);
         }
@@ -369,6 +392,10 @@ trait ExecOptions
             'envVars' => [
                 'type' => 'other',
                 'value' => $this->getEnvVars(),
+            ],
+            'configuration' => [
+                'type' => 'option:value-required',
+                'value' => $this->getConfiguration(),
             ],
             'processTimeout' => [
                 'type' => 'other',

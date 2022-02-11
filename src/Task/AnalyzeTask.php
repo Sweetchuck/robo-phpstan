@@ -22,6 +22,56 @@ class AnalyzeTask extends ExecTaskBase
 
     protected string $taskName = 'PHPStan - Analyze';
 
+    //region Option - lintReporters
+    /**
+     * @var null[]|bool[]|string[]|\Sweetchuck\LintReport\ReporterInterface[]
+     */
+    protected array $lintReporters = [];
+
+    /**
+     * @return null[]|bool[]|string[]|\Sweetchuck\LintReport\ReporterInterface[]
+     */
+    public function getLintReporters(): array
+    {
+        return $this->lintReporters;
+    }
+
+    /**
+     * @param null[]|bool[]|string[]|\Sweetchuck\LintReport\ReporterInterface[] $lintReporters
+     *
+     * @return $this
+     */
+    public function setLintReporters(array $lintReporters)
+    {
+        $this->lintReporters = $lintReporters;
+
+        return $this;
+    }
+
+    /**
+     * @param string $id
+     * @param null|bool|string|\Sweetchuck\LintReport\ReporterInterface $lintReporter
+     *
+     * @return $this
+     */
+    public function addLintReporter(string $id, $lintReporter = null)
+    {
+        $this->lintReporters[$id] = $lintReporter;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function removeLintReporter(string $id)
+    {
+        unset($this->lintReporters[$id]);
+
+        return $this;
+    }
+    //endregion
+
     /**
      * {@inheritdoc}
      */
@@ -29,6 +79,10 @@ class AnalyzeTask extends ExecTaskBase
     {
         parent::setOptions($options);
         $this->setOptionsAnalise($options);
+
+        if (array_key_exists('lintReporters', $options)) {
+            $this->setLintReporters($options['lintReporters']);
+        }
 
         return $this;
     }
