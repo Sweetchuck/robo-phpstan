@@ -71,6 +71,17 @@
     "suggest": {
         "phpstan/phpstan": "*"
     },
-    "scripts": {},
+    "scripts": {
+        "clean": [
+            "@clean:composer",
+            "@clean:codecept"
+        ],
+        "clean:composer": [
+            "rm --recursive --force ./vendor/"
+        ],
+        "clean:codecept": [
+            "git clean --force -X -- ./tests/"
+        ]
+    },
     "scripts-descriptions": {}
 }

@@ -529,18 +529,10 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         $verboseReporter->setFilePathStyle('relative');
 
         return $this
-            ->collectionBuilder()
-            ->addTask($this->taskExec(sprintf(
-                '%s build',
-                escapeshellcmd("{$this->binDir}/codecept"),
-            )))
-            ->addTask(
-                $this
-                    ->taskPhpstanAnalyze()
-                    ->setNoProgress(true)
-                    ->setErrorFormat('json')
-                    ->addLintReporter('lintVerboseReporter', $verboseReporter)
-            );
+            ->taskPhpstanAnalyze()
+            ->setNoProgress(true)
+            ->setErrorFormat('json')
+            ->addLintReporter('lintVerboseReporter', $verboseReporter);
     }
 
     protected function getLogDir(): string
