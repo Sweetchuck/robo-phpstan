@@ -24,7 +24,7 @@ class VersionTaskCest
         $tester->assertSame(0, $exitCode, 'exitCode');
 
         $tester->assertStringContainsString(
-            "The version of the PHPStan is: '1.4.6'",
+            "The version of the PHPStan is: '1.9.2'",
             $stdOutput,
             'stdOutput contains',
         );
