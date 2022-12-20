@@ -6,8 +6,11 @@
 
 /vendor/
 
-/RoboFileAcceptance.php
 /.git-hooks.local
-/robo.yml
+
+/phpcs.xml
 
 /phpstan.neon
+
+/robo.yml
+/RoboFileAcceptance.php
