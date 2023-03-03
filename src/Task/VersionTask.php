@@ -9,10 +9,7 @@ class VersionTask extends ExecTaskBase
 
     protected string $taskName = 'PHPStan - Version';
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function initOptions()
+    protected function initOptions(): static
     {
         parent::initOptions();
 
@@ -25,10 +22,7 @@ class VersionTask extends ExecTaskBase
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function runProcessOutputs()
+    protected function runProcessOutputs(): static
     {
         parent::runProcessOutputs();
 

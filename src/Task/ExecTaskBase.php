@@ -27,10 +27,8 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
 
     /**
      * @param array<string, mixed> $options
-     *
-     * @return $this
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): static
     {
         parent::setOptions($options);
         $this->setOptionsExec($options);
@@ -38,10 +36,7 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    protected function initOptions()
+    protected function initOptions(): static
     {
         parent::initOptions();
         $this->initOptionsExec();
@@ -50,7 +45,7 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getCommand()
     {
@@ -66,10 +61,7 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
             ->getCommandBuild();
     }
 
-    /**
-     * @return $this
-     */
-    protected function getCommandInit()
+    protected function getCommandInit(): static
     {
         $this->cmdPattern = [];
         $this->cmdArgs = [];
@@ -77,10 +69,7 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    protected function getCommandPhpExecutable()
+    protected function getCommandPhpExecutable(): static
     {
         if ($this->options['phpExecutable']['value']) {
             $this->cmdPattern[] = '%s';
@@ -90,10 +79,7 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    protected function getCommandPhpstanExecutable()
+    protected function getCommandPhpstanExecutable(): static
     {
         if ($this->options['phpstanExecutable']['value']) {
             $this->cmdPattern[] = '%s';
@@ -103,10 +89,7 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    protected function getCommandPhpstanCommand()
+    protected function getCommandPhpstanCommand(): static
     {
         if (!empty($this->options['command']['value'])) {
             $this->cmdPattern[] = $this->options['command']['value'];
@@ -114,10 +97,8 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
 
         return $this;
     }
-    /**
-     * @return $this
-     */
-    protected function getCommandPhpstanOptions()
+
+    protected function getCommandPhpstanOptions(): static
     {
         foreach ($this->options as $optionName => $option) {
             if (mb_strpos($option['type'], 'option:') !== 0) {
@@ -161,10 +142,7 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    protected function getCommandPhpstanArguments()
+    protected function getCommandPhpstanArguments(): static
     {
         foreach ($this->options as $option) {
             if (mb_strpos($option['type'], 'argument:') !== 0) {
@@ -196,10 +174,7 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
         return vsprintf(implode(' ', $this->cmdPattern), $this->cmdArgs);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function runPrepare()
+    protected function runPrepare(): static
     {
         parent::runPrepare();
         $this->command = $this->getCommand();
@@ -207,10 +182,7 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function runHeader()
+    protected function runHeader(): static
     {
         $this->printTaskInfo(
             '<info>{command}</info>',
@@ -222,10 +194,7 @@ abstract class ExecTaskBase extends TaskBase implements CommandInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function runAction()
+    protected function runAction(): static
     {
         $processInner = Process::fromShellCommandline(
             $this->command,

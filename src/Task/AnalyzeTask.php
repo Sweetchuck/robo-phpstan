@@ -38,10 +38,8 @@ class AnalyzeTask extends ExecTaskBase
 
     /**
      * @param null[]|bool[]|string[]|\Sweetchuck\LintReport\ReporterInterface[] $lintReporters
-     *
-     * @return $this
      */
-    public function setLintReporters(array $lintReporters)
+    public function setLintReporters(array $lintReporters): static
     {
         $this->lintReporters = $lintReporters;
 
@@ -51,20 +49,15 @@ class AnalyzeTask extends ExecTaskBase
     /**
      * @param string $id
      * @param null|bool|string|\Sweetchuck\LintReport\ReporterInterface $lintReporter
-     *
-     * @return $this
      */
-    public function addLintReporter(string $id, $lintReporter = null)
+    public function addLintReporter(string $id, $lintReporter = null): static
     {
         $this->lintReporters[$id] = $lintReporter;
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function removeLintReporter(string $id)
+    public function removeLintReporter(string $id): static
     {
         unset($this->lintReporters[$id]);
 
@@ -75,7 +68,7 @@ class AnalyzeTask extends ExecTaskBase
     /**
      * {@inheritdoc}
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): static
     {
         parent::setOptions($options);
         $this->setOptionsAnalise($options);
@@ -87,10 +80,7 @@ class AnalyzeTask extends ExecTaskBase
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function initOptions()
+    protected function initOptions(): static
     {
         parent::initOptions();
         $this->initOptionsAnalise();
@@ -102,10 +92,7 @@ class AnalyzeTask extends ExecTaskBase
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function runProcessOutputs()
+    protected function runProcessOutputs(): static
     {
         parent::runProcessOutputs();
 

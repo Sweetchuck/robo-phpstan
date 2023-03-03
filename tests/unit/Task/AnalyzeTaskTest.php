@@ -7,7 +7,8 @@ namespace Sweetchuck\Robo\Phpstan\Tests\Unit\Task;
 use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyProcess;
 
 /**
- * @covers \Sweetchuck\Robo\Phpstan\Task\AnalyzeTask<extended>
+ * @covers \Sweetchuck\Robo\Phpstan\Task\AnalyzeTask
+ * @covers \Sweetchuck\Robo\Phpstan\Task\TaskBase
  * @covers \Sweetchuck\Robo\Phpstan\PhpstanTaskLoader
  */
 class AnalyzeTaskTest extends TaskTestBase

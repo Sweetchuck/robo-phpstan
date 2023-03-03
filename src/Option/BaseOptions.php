@@ -17,10 +17,7 @@ trait BaseOptions
         return $this->assetNamePrefix;
     }
 
-    /**
-     * @return $this
-     */
-    public function setAssetNamePrefix(string $value)
+    public function setAssetNamePrefix(string $value): static
     {
         $this->assetNamePrefix = $value;
 
@@ -30,10 +27,8 @@ trait BaseOptions
 
     /**
      * @param array<string, mixed> $options
-     *
-     * @return $this
      */
-    protected function setOptionsBase(array $options)
+    protected function setOptionsBase(array $options): static
     {
         if (array_key_exists('assetNamePrefix', $options)) {
             $this->setAssetNamePrefix($options['assetNamePrefix']);
@@ -42,10 +37,7 @@ trait BaseOptions
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    protected function initOptionsBase()
+    protected function initOptionsBase(): static
     {
         $this->options += [
             'assetNamePrefix' => [

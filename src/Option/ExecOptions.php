@@ -17,10 +17,7 @@ trait ExecOptions
         return $this->workingDirectory;
     }
 
-    /**
-     * @return $this
-     */
-    public function setWorkingDirectory(string $value)
+    public function setWorkingDirectory(string $value): static
     {
         $this->workingDirectory = $value;
 
@@ -44,10 +41,8 @@ trait ExecOptions
 
     /**
      * @param array<string, string> $envVars
-     *
-     * @return $this
      */
-    public function setEnvVars(array $envVars)
+    public function setEnvVars(array $envVars): static
     {
         $this->envVars = $envVars;
 
@@ -59,10 +54,7 @@ trait ExecOptions
         return $this->envVars[$name] ?? null;
     }
 
-    /**
-     * @return $this
-     */
-    public function setEnvVar(string $name, ?string $value)
+    public function setEnvVar(string $name, ?string $value): static
     {
         if ($value === null) {
             unset($this->envVars[$name]);
@@ -84,10 +76,7 @@ trait ExecOptions
         return $this->phpExecutable;
     }
 
-    /**
-     * @return $this
-     */
-    public function setPhpExecutable(string $phpExecutable)
+    public function setPhpExecutable(string $phpExecutable): static
     {
         $this->phpExecutable = $phpExecutable;
 
@@ -103,10 +92,7 @@ trait ExecOptions
         return $this->phpstanExecutable;
     }
 
-    /**
-     * @return $this
-     */
-    public function setPhpstanExecutable(string $phpstanExecutable)
+    public function setPhpstanExecutable(string $phpstanExecutable): static
     {
         $this->phpstanExecutable = $phpstanExecutable;
 
@@ -122,10 +108,7 @@ trait ExecOptions
         return $this->configuration;
     }
 
-    /**
-     * @return $this
-     */
-    public function setConfiguration(?string $configuration)
+    public function setConfiguration(?string $configuration): static
     {
         $this->configuration = $configuration;
 
@@ -141,10 +124,7 @@ trait ExecOptions
         return $this->processTimeout;
     }
 
-    /**
-     * @return $this
-     */
-    public function setProcessTimeout(?int $processTimeout)
+    public function setProcessTimeout(?int $processTimeout): static
     {
         $this->processTimeout = $processTimeout;
 
@@ -160,10 +140,7 @@ trait ExecOptions
         return $this->hideStdOutput;
     }
 
-    /**
-     * @return $this
-     */
-    public function setHideStdOutput(bool $hideStdOutput)
+    public function setHideStdOutput(bool $hideStdOutput): static
     {
         $this->hideStdOutput = $hideStdOutput;
 
@@ -179,10 +156,7 @@ trait ExecOptions
         return $this->hideStdError;
     }
 
-    /**
-     * @return $this
-     */
-    public function setHideStdError(bool $hideStdError)
+    public function setHideStdError(bool $hideStdError): static
     {
         $this->hideStdError = $hideStdError;
 
@@ -198,10 +172,7 @@ trait ExecOptions
         return $this->noProgress;
     }
 
-    /**
-     * @return $this
-     */
-    public function setNoProgress(bool $noProgress)
+    public function setNoProgress(bool $noProgress): static
     {
         $this->noProgress = $noProgress;
 
@@ -217,10 +188,7 @@ trait ExecOptions
         return $this->debug;
     }
 
-    /**
-     * @return $this
-     */
-    public function setDebug(bool $debug)
+    public function setDebug(bool $debug): static
     {
         $this->debug = $debug;
 
@@ -236,10 +204,7 @@ trait ExecOptions
         return $this->quiet;
     }
 
-    /**
-     * @return $this
-     */
-    public function setQuiet(bool $quiet)
+    public function setQuiet(bool $quiet): static
     {
         $this->quiet = $quiet;
 
@@ -255,10 +220,7 @@ trait ExecOptions
         return $this->ansi;
     }
 
-    /**
-     * @return $this
-     */
-    public function setAnsi(?bool $ansi)
+    public function setAnsi(?bool $ansi): static
     {
         $this->ansi = $ansi;
 
@@ -274,10 +236,7 @@ trait ExecOptions
         return $this->noInteraction;
     }
 
-    /**
-     * @return $this
-     */
-    public function setNoInteraction(bool $noInteraction)
+    public function setNoInteraction(bool $noInteraction): static
     {
         $this->noInteraction = $noInteraction;
 
@@ -293,10 +252,7 @@ trait ExecOptions
         return $this->verbose;
     }
 
-    /**
-     * @return $this
-     */
-    public function setVerbose(int $verbose)
+    public function setVerbose(int $verbose): static
     {
         assert($verbose > 0 && $verbose < 4, "Allowed values: 0-3; Current value: $verbose");
         $this->verbose = $verbose;
@@ -307,10 +263,8 @@ trait ExecOptions
 
     /**
      * @param array<string, mixed> $options
-     *
-     * @return $this
      */
-    protected function setOptionsExec(array $options)
+    protected function setOptionsExec(array $options): static
     {
         if (array_key_exists('workingDirectory', $options)) {
             $this->setWorkingDirectory($options['workingDirectory']);
@@ -371,10 +325,7 @@ trait ExecOptions
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    protected function initOptionsExec()
+    protected function initOptionsExec(): static
     {
         $this->options += [
             'workingDirectory' => [

@@ -44,20 +44,15 @@ abstract class TaskBase extends BaseTask implements ContainerAwareInterface, Out
 
     /**
      * @param array<string, mixed> $options
-     *
-     * @return $this
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): static
     {
         $this->setOptionsBase($options);
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    protected function initOptions()
+    protected function initOptions(): static
     {
         $this->options = [];
         $this->initOptionsBase();
@@ -80,33 +75,21 @@ abstract class TaskBase extends BaseTask implements ContainerAwareInterface, Out
             ->runReturn();
     }
 
-    /**
-     * @return $this
-     */
-    protected function runPrepare()
+    protected function runPrepare(): static
     {
         $this->initOptions();
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    protected function runHeader()
+    protected function runHeader(): static
     {
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    abstract protected function runAction();
+    abstract protected function runAction(): static;
 
-    /**
-     * @return $this
-     */
-    protected function runProcessOutputs()
+    protected function runProcessOutputs(): static
     {
         return $this;
     }

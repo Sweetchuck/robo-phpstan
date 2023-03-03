@@ -17,10 +17,7 @@ trait AnalyzeOptions
         return $this->level;
     }
 
-    /**
-     * @return $this
-     */
-    public function setLevel(?int $level)
+    public function setLevel(?int $level): static
     {
         $this->level = $level;
 
@@ -36,10 +33,7 @@ trait AnalyzeOptions
         return $this->autoloadFile;
     }
 
-    /**
-     * @return $this
-     */
-    public function setAutoloadFile(?string $autoloadFile)
+    public function setAutoloadFile(?string $autoloadFile): static
     {
         $this->autoloadFile = $autoloadFile;
 
@@ -55,10 +49,7 @@ trait AnalyzeOptions
         return $this->errorFormat;
     }
 
-    /**
-     * @return $this
-     */
-    public function setErrorFormat(?string $errorFormat)
+    public function setErrorFormat(?string $errorFormat): static
     {
         $this->errorFormat = $errorFormat;
 
@@ -74,10 +65,7 @@ trait AnalyzeOptions
         return $this->memoryLimit;
     }
 
-    /**
-     * @return $this
-     */
-    public function setMemoryLimit(?string $memoryLimit)
+    public function setMemoryLimit(?string $memoryLimit): static
     {
         $this->memoryLimit = $memoryLimit;
 
@@ -93,10 +81,7 @@ trait AnalyzeOptions
         return $this->xdebug;
     }
 
-    /**
-     * @return $this
-     */
-    public function setXdebug(bool $xdebug)
+    public function setXdebug(bool $xdebug): static
     {
         $this->xdebug = $xdebug;
 
@@ -120,10 +105,8 @@ trait AnalyzeOptions
 
     /**
      * @param string[] $paths
-     *
-     * @return $this
      */
-    public function setPaths(array $paths)
+    public function setPaths(array $paths): static
     {
         $this->paths = $paths;
 
@@ -139,10 +122,7 @@ trait AnalyzeOptions
         return $this->failOn;
     }
 
-    /**
-     * @return $this
-     */
-    public function setFailOn(string $value)
+    public function setFailOn(string $value): static
     {
         $this->failOn = $value;
 
@@ -152,10 +132,8 @@ trait AnalyzeOptions
 
     /**
      * @param array<string, mixed> $options
-     *
-     * @return $this
      */
-    protected function setOptionsAnalise(array $options)
+    protected function setOptionsAnalise(array $options): static
     {
         if (array_key_exists('level', $options)) {
             $this->setLevel($options['level']);
@@ -188,10 +166,7 @@ trait AnalyzeOptions
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    protected function initOptionsAnalise()
+    protected function initOptionsAnalise(): static
     {
         $this->options += [
             'level' => [

@@ -8,6 +8,11 @@ use Codeception\Test\Unit;
 use Sweetchuck\Robo\Phpstan\LintReportWrapper\ReportWrapper;
 use Sweetchuck\Robo\Phpstan\Tests\UnitTester;
 
+/**
+ * @covers \Sweetchuck\Robo\Phpstan\LintReportWrapper\ReportWrapper
+ * @covers \Sweetchuck\Robo\Phpstan\LintReportWrapper\FailureWrapper
+ * @covers \Sweetchuck\Robo\Phpstan\LintReportWrapper\FileWrapper
+ */
 class ReportWrapperTest extends Unit
 {
     protected UnitTester $tester;
