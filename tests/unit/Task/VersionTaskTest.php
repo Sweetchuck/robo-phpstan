@@ -4,19 +4,21 @@ declare(strict_types = 1);
 
 namespace Sweetchuck\Robo\Phpstan\Tests\Unit\Task;
 
+use Codeception\Attribute\DataProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyProcess;
+use Sweetchuck\Robo\Phpstan\Task\TaskBase;
+use Sweetchuck\Robo\Phpstan\Task\VersionTask;
 
-/**
- * @covers \Sweetchuck\Robo\Phpstan\Task\VersionTask
- * @covers \Sweetchuck\Robo\Phpstan\Task\TaskBase
- */
+#[CoversClass(VersionTask::class)]
+#[CoversClass(TaskBase::class)]
 class VersionTaskTest extends TaskTestBase
 {
 
     /**
      * @return array<string, mixed>
      */
-    public function casesGetCommand(): array
+    public static function casesGetCommand(): array
     {
         return [
             'basic' => [
@@ -34,9 +36,8 @@ class VersionTaskTest extends TaskTestBase
 
     /**
      * @param array<string, mixed> $options
-     *
-     * @dataProvider casesGetCommand
      */
+    #[DataProvider('casesGetCommand')]
     public function testGetCommand(string $expected, array $options): void
     {
         $task = $this->taskBuilder->taskPhpstanVersion($options);
@@ -72,9 +73,8 @@ class VersionTaskTest extends TaskTestBase
      * @param array<string, mixed> $expected
      * @param array<string, mixed> $options
      * @param array<string, mixed> $processProphecy
-     *
-     * @dataProvider casesRunSuccess
      */
+    #[DataProvider('casesRunSuccess')]
     public function testRunSuccess(array $expected, array $options, array $processProphecy): void
     {
         $expected += [
@@ -92,7 +92,7 @@ class VersionTaskTest extends TaskTestBase
         $this->tester->assertSame(
             $expected['wasSuccessful'],
             $result->wasSuccessful(),
-            'task exit code'
+            'task exit code',
         );
 
         $actualAssets = $result->getData();
@@ -100,13 +100,13 @@ class VersionTaskTest extends TaskTestBase
             $this->tester->assertArrayHasKey(
                 $key,
                 $actualAssets,
-                "'$key' asset is present"
+                "'$key' asset is present",
             );
 
             $this->tester->assertSame(
                 $expectedValue,
                 $actualAssets[$key],
-                "$key asset is okay"
+                "$key asset is okay",
             );
         }
     }

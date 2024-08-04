@@ -4,15 +4,17 @@ declare(strict_types = 1);
 
 namespace Sweetchuck\Robo\Phpstan\Tests\Unit\LintReportWrapper;
 
+use Codeception\Attribute\DataProvider;
 use Codeception\Test\Unit;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Sweetchuck\Robo\Phpstan\LintReportWrapper\FailureWrapper;
+use Sweetchuck\Robo\Phpstan\LintReportWrapper\FileWrapper;
 use Sweetchuck\Robo\Phpstan\LintReportWrapper\ReportWrapper;
 use Sweetchuck\Robo\Phpstan\Tests\UnitTester;
 
-/**
- * @covers \Sweetchuck\Robo\Phpstan\LintReportWrapper\ReportWrapper
- * @covers \Sweetchuck\Robo\Phpstan\LintReportWrapper\FailureWrapper
- * @covers \Sweetchuck\Robo\Phpstan\LintReportWrapper\FileWrapper
- */
+#[CoversClass(ReportWrapper::class)]
+#[CoversClass(FailureWrapper::class)]
+#[CoversClass(FileWrapper::class)]
 class ReportWrapperTest extends Unit
 {
     protected UnitTester $tester;
@@ -20,7 +22,7 @@ class ReportWrapperTest extends Unit
     /**
      * @return array<string, mixed>
      */
-    public function casesReports()
+    public static function casesReports(): array
     {
         $dir = codecept_data_dir('fixtures/LintReportWrapper');
 
@@ -58,9 +60,8 @@ class ReportWrapperTest extends Unit
     /**
      * @param array<string, mixed> $expected
      * @param array<string, mixed> $report
-     *
-     * @dataProvider casesReports
      */
+    #[DataProvider('casesReports')]
     public function testAll(array $expected, array $report): void
     {
         $rw = new ReportWrapper($report);

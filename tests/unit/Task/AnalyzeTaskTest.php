@@ -4,20 +4,24 @@ declare(strict_types = 1);
 
 namespace Sweetchuck\Robo\Phpstan\Tests\Unit\Task;
 
+use Codeception\Attribute\DataProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyProcess;
+use Sweetchuck\Robo\Phpstan\PhpstanTaskLoader;
+use Sweetchuck\Robo\Phpstan\Task\AnalyzeTask;
+use Sweetchuck\Robo\Phpstan\Task\TaskBase;
 
-/**
- * @covers \Sweetchuck\Robo\Phpstan\Task\AnalyzeTask
- * @covers \Sweetchuck\Robo\Phpstan\Task\TaskBase
- * @covers \Sweetchuck\Robo\Phpstan\PhpstanTaskLoader
- */
+#[CoversClass(AnalyzeTask::class)]
+#[CoversClass(TaskBase::class)]
+#[CoversTrait(PhpstanTaskLoader::class)]
 class AnalyzeTaskTest extends TaskTestBase
 {
 
     /**
      * @return array<string, mixed>
      */
-    public function casesGetCommand(): array
+    public static function casesGetCommand(): array
     {
         return [
             'basic' => [
@@ -41,9 +45,8 @@ class AnalyzeTaskTest extends TaskTestBase
 
     /**
      * @param array<string, mixed> $options
-     *
-     * @dataProvider casesGetCommand
      */
+    #[DataProvider('casesGetCommand')]
     public function testGetCommand(string $expected, array $options): void
     {
         $task = $this->taskBuilder->taskPhpstanAnalyze($options);
@@ -54,7 +57,7 @@ class AnalyzeTaskTest extends TaskTestBase
     /**
      * @return array<string, mixed>
      */
-    public function casesRunSuccess(): array
+    public static function casesRunSuccess(): array
     {
         $reportErrors = [
             'totals' => [
@@ -107,9 +110,8 @@ class AnalyzeTaskTest extends TaskTestBase
      * @param array<string, mixed> $expected
      * @param array<string, mixed> $options
      * @param array<string, mixed> $processProphecy
-     *
-     * @dataProvider casesRunSuccess
      */
+    #[DataProvider('casesRunSuccess')]
     public function testRunSuccess(array $expected, array $options, array $processProphecy): void
     {
         $expected += [
