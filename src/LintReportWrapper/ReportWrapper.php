@@ -17,7 +17,7 @@ class ReportWrapper implements ReportWrapperInterface
     /**
      * @param null|array<string, mixed> $report
      */
-    public function __construct(array $report = null)
+    public function __construct(?array $report = null)
     {
         if ($report !== null) {
             $this->setReport($report);
