@@ -41,7 +41,10 @@
         "php": ">=8.3",
         "ext-json": "*",
         "consolidation/robo": "^5.0",
-        "sweetchuck/lint-report": "1.x-dev"
+        "nette/neon": "^3.4",
+        "sweetchuck/lint-report": "1.x-dev",
+        "symfony/filesystem": "^7.2",
+        "symfony/string": "^7.2"
     },
     "require-dev": {
         "codeception/codeception": "^5.0",
@@ -62,6 +65,9 @@
             "Sweetchuck\\Robo\\Phpstan\\": "src/"
         }
     },
+    "suggest": {
+        "phpstan/phpstan": "A phpstan executable is required."
+    },
     "autoload-dev": {
         "psr-4": {
             "Sweetchuck\\Robo\\Phpstan\\Tests\\Acceptance\\": "tests/acceptance/",
@@ -71,9 +77,6 @@
         "files": [
             "RoboFile.php"
         ]
-    },
-    "suggest": {
-        "phpstan/phpstan": "*"
     },
     "scripts": {
         "clean": [

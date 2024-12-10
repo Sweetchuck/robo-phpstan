@@ -41,6 +41,16 @@ parameters:
 			path: ../RoboFile.php
 
 		-
+			message: "#^Call to an undefined method Robo\\\\Collection\\\\CollectionBuilder\\|Sweetchuck\\\\Robo\\\\Phpstan\\\\Task\\\\GeneratePhpstanPhpTask\\:\\:setContainer\\(\\)\\.$#"
+			count: 1
+			path: ../RoboFile.php
+
+		-
+			message: "#^Call to an undefined method Robo\\\\Collection\\\\CollectionBuilder\\|Sweetchuck\\\\Robo\\\\Phpstan\\\\Task\\\\GeneratePhpstanPhpTask\\:\\:setOptions\\(\\)\\.$#"
+			count: 1
+			path: ../RoboFile.php
+
+		-
 			message: "#^Call to an undefined method Robo\\\\Collection\\\\CollectionBuilder\\|Sweetchuck\\\\Robo\\\\Phpstan\\\\Task\\\\VersionTask\\:\\:setContainer\\(\\)\\.$#"
 			count: 1
 			path: ../RoboFile.php
@@ -66,6 +76,16 @@ parameters:
 			path: ../tests/_support/Helper/Dummy/DummyTaskBuilder.php
 
 		-
+			message: "#^Call to an undefined method Robo\\\\Collection\\\\CollectionBuilder\\|Sweetchuck\\\\Robo\\\\Phpstan\\\\Task\\\\GeneratePhpstanPhpTask\\:\\:setContainer\\(\\)\\.$#"
+			count: 1
+			path: ../tests/_support/Helper/Dummy/DummyTaskBuilder.php
+
+		-
+			message: "#^Call to an undefined method Robo\\\\Collection\\\\CollectionBuilder\\|Sweetchuck\\\\Robo\\\\Phpstan\\\\Task\\\\GeneratePhpstanPhpTask\\:\\:setOptions\\(\\)\\.$#"
+			count: 1
+			path: ../tests/_support/Helper/Dummy/DummyTaskBuilder.php
+
+		-
 			message: "#^Call to an undefined method Robo\\\\Collection\\\\CollectionBuilder\\|Sweetchuck\\\\Robo\\\\Phpstan\\\\Task\\\\VersionTask\\:\\:setContainer\\(\\)\\.$#"
 			count: 1
 			path: ../tests/_support/Helper/Dummy/DummyTaskBuilder.php
@@ -82,6 +102,16 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method Robo\\\\Collection\\\\CollectionBuilder\\|Sweetchuck\\\\Robo\\\\Phpstan\\\\Task\\\\AnalyzeTask\\:\\:setOptions\\(\\)\\.$#"
+			count: 1
+			path: ../tests/_support/Helper/RoboFiles/PhpstanRoboFile.php
+
+		-
+			message: "#^Call to an undefined method Robo\\\\Collection\\\\CollectionBuilder\\|Sweetchuck\\\\Robo\\\\Phpstan\\\\Task\\\\GeneratePhpstanPhpTask\\:\\:setContainer\\(\\)\\.$#"
+			count: 1
+			path: ../tests/_support/Helper/RoboFiles/PhpstanRoboFile.php
+
+		-
+			message: "#^Call to an undefined method Robo\\\\Collection\\\\CollectionBuilder\\|Sweetchuck\\\\Robo\\\\Phpstan\\\\Task\\\\GeneratePhpstanPhpTask\\:\\:setOptions\\(\\)\\.$#"
 			count: 1
 			path: ../tests/_support/Helper/RoboFiles/PhpstanRoboFile.php
 

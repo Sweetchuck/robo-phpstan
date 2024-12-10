@@ -25,6 +25,9 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @phpstan-import-type DevPhpExecutable from \Sweetchuck\Robo\Phpstan\Tests\Phpstan
+ */
 class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterface
 {
     use LoggerAwareTrait;
@@ -182,7 +185,6 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
     }
     // endregion
 
-
     // region Command - lint:phpstanCollectionBuilder
     #[Cli\Hook(
         type: HookManager::PRE_COMMAND_EVENT,
@@ -226,6 +228,32 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         ],
     ): CollectionBuilder {
         return $this->getTaskCodeceptRunSuites($suiteNames, $options);
+    }
+    // endregion
+
+    // region Command - build
+    #[Cli\Command(name: 'build')]
+    public function cmdBuildExecute(): TaskInterface
+    {
+        $cb = $this->collectionBuilder();
+
+        // @phpstan-ignore-next-line
+        $taskPhpstanGeneratePhp = $this
+            ->taskPhpstanGeneratePhp()
+            ->setSrcFiles(
+                (new Finder())
+                    ->in('./.phpstan')
+                    ->files()
+                    ->name('parameters.typeAliases.dev.neon')
+            )
+            ->setDstFilePath('./tests/_support/Phpstan.php')
+            ->setNamespace('Sweetchuck\Robo\Phpstan\Tests');
+
+        $cb->addTaskList([
+            'phpstanGeneratePhp' => $taskPhpstanGeneratePhp,
+        ]);
+
+        return $cb;
     }
     // endregion
 
@@ -363,7 +391,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
     }
 
     /**
-     * @param array<string, mixed> $php
+     * @phpstan-param DevPhpExecutable $php
      */
     protected function getTaskCodeceptRunSuite(string $suite, array $php): CollectionBuilder
     {
