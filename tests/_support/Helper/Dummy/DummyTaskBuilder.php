@@ -23,6 +23,7 @@ class DummyTaskBuilder implements BuilderAwareInterface, ContainerAwareInterface
     use PhpstanTaskLoader {
         taskPhpstanAnalyze as public;
         taskPhpstanVersion as public;
+        taskPhpstanGeneratePhp as public;
     }
 
     /**

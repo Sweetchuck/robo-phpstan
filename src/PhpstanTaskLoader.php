@@ -6,6 +6,7 @@ namespace Sweetchuck\Robo\Phpstan;
 
 use Psr\Container\ContainerInterface;
 use Sweetchuck\Robo\Phpstan\Task\AnalyzeTask;
+use Sweetchuck\Robo\Phpstan\Task\GeneratePhpstanPhpTask;
 use Sweetchuck\Robo\Phpstan\Task\VersionTask;
 
 /**
@@ -37,6 +38,21 @@ trait PhpstanTaskLoader
     {
         /** @var \Sweetchuck\Robo\Phpstan\Task\VersionTask|\Robo\Collection\CollectionBuilder $task */
         $task = $this->task(VersionTask::class);
+        $task->setContainer($this->getContainer());
+        $task->setOptions($options);
+
+        return $task;
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     *
+     * @return \Sweetchuck\Robo\Phpstan\Task\GeneratePhpstanPhpTask|\Robo\Collection\CollectionBuilder
+     */
+    protected function taskPhpstanGeneratePhp(array $options = [])
+    {
+        /** @var \Sweetchuck\Robo\Phpstan\Task\GeneratePhpstanPhpTask|\Robo\Collection\CollectionBuilder $task */
+        $task = $this->task(GeneratePhpstanPhpTask::class);
         $task->setContainer($this->getContainer());
         $task->setOptions($options);
 
