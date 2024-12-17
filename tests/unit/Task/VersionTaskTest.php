@@ -54,14 +54,14 @@ class VersionTaskTest extends TaskTestBase
             'basic' => [
                 [
                     'assets' => [
-                        'version.full' => '1.12.12',
+                        'version.full' => '1.12.13',
                     ],
                 ],
                 [],
                 [
                     [
                         'exitCode' => 0,
-                        'stdOutput' => 'PHPStan - PHP Static Analysis Tool 1.12.12',
+                        'stdOutput' => 'PHPStan - PHP Static Analysis Tool 1.12.13',
                         'stdError' => '',
                     ],
                 ],
