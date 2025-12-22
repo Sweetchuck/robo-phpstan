@@ -8,5 +8,4 @@ parameters:
 			- ../tests/_support/_generated/
 		analyseAndScan:
 			- ../tests/_data/
-			- ../tests/_envs/
 			- ../tests/_output/

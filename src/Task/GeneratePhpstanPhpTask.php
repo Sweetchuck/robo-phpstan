@@ -132,7 +132,6 @@ class GeneratePhpstanPhpTask extends TaskBase
             '{{ typeAliases }}' => '',
         ];
         foreach ($this->getSrcFiles() as $srcFile) {
-            assert($srcFile instanceof \SplFileInfo);
             $srcData = (array) Neon::decodeFile($srcFile->getPathname());
             if (empty($srcData['parameters']['typeAliases'])) {
                 $this->logger->warning(

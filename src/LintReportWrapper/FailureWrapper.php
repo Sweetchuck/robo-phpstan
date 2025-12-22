@@ -25,8 +25,7 @@ class FailureWrapper implements FailureWrapperInterface
             'message' => '',
             'line' => 0,
             'ignorable' => true,
-            // Extra.
-            'source' => '',
+            'identifier' => '',
             'severity' => ReportWrapperInterface::SEVERITY_ERROR,
             'type' => 'error',
             'column' => 0,
@@ -41,7 +40,7 @@ class FailureWrapper implements FailureWrapperInterface
 
     public function source(): string
     {
-        return $this->failure['source'];
+        return $this->failure['identifier'];
     }
 
     public function line(): int

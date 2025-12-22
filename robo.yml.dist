@@ -1,6 +1,11 @@
-
 php:
     executables:
         php_min:
             enabled: true
             command: 'php'
+            arguments:
+                # PHP 8.5 and Codeception 5.3.3 throws:
+                # > Fatal error: Uncaught Codeception\Exception\ConfigurationException: register_argc_argv must be set to On
+                # > for running Codeception in vendor/codeception/codeception/src/Codeception/Application.php:104.
+                define_raa_key: '-d'
+                define_raa_value: 'register_argc_argv=On'
