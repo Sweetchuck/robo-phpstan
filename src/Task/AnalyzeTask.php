@@ -94,6 +94,7 @@ class AnalyzeTask extends ExecTaskBase
 
     protected function runProcessOutputs(): static
     {
+        // @phpstan-ignore-next-line staticMethod.resultUnused
         parent::runProcessOutputs();
 
         if (!$this->isLintSuccess() || !$this->actionStdOutput) {

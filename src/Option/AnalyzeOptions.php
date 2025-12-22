@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace Sweetchuck\Robo\Phpstan\Option;
 
 /**
- * @property array $options
+ * @property array<string, array<string, mixed>> $options
  */
 trait AnalyzeOptions
 {

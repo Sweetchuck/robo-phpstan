@@ -2,7 +2,7 @@
 version: 2.1
 
 orbs:
-    codecov: 'codecov/codecov@3.0.0'
+    codecov: 'codecov/codecov@5.4'
 
 .env_common: &env_common
     SHELL: '/bin/bash'
@@ -38,6 +38,17 @@ executors:
                 name: 'main'
                 image: 'cimg/php:8.4'
 
+    php_plus2:
+        resource_class: 'small'
+        environment:
+            <<: *env_common
+            <<: *env_xdebug
+            <<: *env_composer
+        docker:
+            -
+                name: 'main'
+                image: 'cimg/php:8.5'
+
 commands:
     install_php_extension_pcov:
         description: 'Install PCOV PHP extension'
@@ -71,6 +82,10 @@ commands:
                 run:
                     name: 'Composer - install'
                     command: |
+                        if php -r 'exit(version_compare(\PHP_VERSION, "8.5", ">=") ? 0 : 1);'
+                        then
+                            sudo composer self-update
+                        fi
                         composer install --no-progress --ansi
             -
                 save_cache:
@@ -100,7 +115,8 @@ commands:
             -
                 codecov/upload:
                     flags: 'unit'
-                    file: './tests/_output/machine/coverage/unit/coverage.xml'
+                    disable_search: true
+                    files: './tests/_output/machine/coverage/unit/coverage.xml'
             -
                 run:
                     name: 'Codeception - acceptance'
@@ -109,7 +125,8 @@ commands:
             -
                 codecov/upload:
                     flags: 'acceptance'
-                    file: './tests/_output/machine/coverage/acceptance/coverage.xml'
+                    disable_search: true
+                    files: './tests/_output/machine/coverage/acceptance/coverage.xml'
             -
                 store_test_results:
                     name: 'Store unit test results'
@@ -157,3 +174,4 @@ workflows:
                             executor:
                                 - 'php_min'
                                 - 'php_plus1'
+                                - 'php_plus2'

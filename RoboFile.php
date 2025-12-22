@@ -237,7 +237,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
     {
         $cb = $this->collectionBuilder();
 
-        // @phpstan-ignore-next-line
+        // @phpstan-ignore-next-line method.notFound
         $taskPhpstanGeneratePhp = $this
             ->taskPhpstanGeneratePhp()
             ->setSrcFiles(
@@ -249,8 +249,19 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
             ->setDstFilePath('./tests/_support/Phpstan.php')
             ->setNamespace('Sweetchuck\Robo\Phpstan\Tests');
 
+        $taskCodeceptionBuild = $this
+            ->taskExec('vendor/bin/codecept build');
+
+        $taskCreateDirs = $this
+            ->taskFilesystemStack()
+            ->mkdir([
+                'tests/_output',
+            ]);
+
         $cb->addTaskList([
-            'phpstanGeneratePhp' => $taskPhpstanGeneratePhp,
+            'Generate-PhpstanPhp' => $taskPhpstanGeneratePhp,
+            'Execute-CodeceptionBuild' => $taskCodeceptionBuild,
+            'Create-Dirs' => $taskCreateDirs,
         ]);
 
         return $cb;
@@ -405,32 +416,23 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
 
         $logDir = $this->getOutputDir();
 
-        $cmdPattern = '';
-        $cmdArgs = [];
-        foreach ($php['envVars'] ?? [] as $envName => $envValue) {
-            $cmdPattern .= "{$envName}";
-            if ($envValue === null) {
-                $cmdPattern .= ' ';
-            } else {
-                $cmdPattern .= '=%s ';
-                $cmdArgs[] = escapeshellarg($envValue);
-            }
-        }
+        $phpArguments = array_filter(
+            $php['arguments'] ?? [],
+            fn(?string $argument): bool => $argument !== null,
+        );
+        $command = [
+            $php['command'],
+            ...$phpArguments,
+        ];
 
-        $cmdPattern .= '%s';
-        $cmdArgs[] = $php['command'];
-
-        $cmdPattern .= ' %s';
-        $cmdArgs[] = escapeshellcmd("{$this->binDir}/codecept");
-
-        $cmdPattern .= ' --ansi';
-        $cmdPattern .= ' --verbose';
-        $cmdPattern .= ' --debug';
+        $command[] = "{$this->binDir}/codecept";
+        $command[] = '--ansi';
+        $command[] = '--verbose';
+        $command[] = '--debug';
 
         $cb = $this->collectionBuilder();
         if ($withCoverageHtml) {
-            $cmdPattern .= ' --coverage-html=%s';
-            $cmdArgs[] = escapeshellarg("human/coverage/$suite/html");
+            $command[] = "--coverage-html=human/coverage/$suite/html";
 
             $cb->addTask(
                 $this
@@ -440,13 +442,11 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         }
 
         if ($withCoverageXml) {
-            $cmdPattern .= ' --coverage-xml=%s';
-            $cmdArgs[] = escapeshellarg("machine/coverage/$suite/coverage.xml");
+            $command[] = "--coverage-xml=machine/coverage/$suite/coverage.xml";
         }
 
         if ($withCoverageHtml || $withCoverageXml) {
-            $cmdPattern .= ' --coverage=%s';
-            $cmdArgs[] = escapeshellarg("machine/coverage/$suite/coverage.php");
+            $command[] = "--coverage=machine/coverage/$suite/coverage.php";
 
             $cb->addTask(
                 $this
@@ -456,8 +456,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         }
 
         if ($withUnitReportHtml) {
-            $cmdPattern .= ' --html=%s';
-            $cmdArgs[] = escapeshellarg("human/junit/junit.$suite.html");
+            $command[] = "--html=human/junit/junit.$suite.html";
 
             $cb->addTask(
                 $this
@@ -467,8 +466,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         }
 
         if ($withUnitReportXml) {
-            $cmdPattern .= ' --xml=%s';
-            $cmdArgs[] = escapeshellarg("machine/junit/junit.$suite.xml");
+            $command[] = "--xml=machine/junit/junit.$suite.xml";
 
             $cb->addTask(
                 $this
@@ -477,25 +475,17 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
             );
         }
 
-        $cmdPattern .= ' run';
+        $command[] = 'run';
         if ($suite !== 'all') {
-            $cmdPattern .= ' %s';
-            $cmdArgs[] = escapeshellarg($suite);
+            $command[] = $suite;
         }
 
         $envDir = $this->codeceptionInfo['paths']['envs'];
         $envFileName = "{$this->environmentType}.{$this->environmentName}";
         if (file_exists("$envDir/$envFileName.yml")) {
-            $cmdPattern .= ' --env %s';
-            $cmdArgs[] = escapeshellarg($envFileName);
+            $command[] = '--env';
+            $command[] = $envFileName;
         }
-
-        if ($this->environmentType === 'ci' && $this->environmentName === 'jenkins') {
-            // Jenkins has to use a post-build action to mark the build "unstable".
-            $cmdPattern .= ' || [[ "${?}" == "1" ]]';
-        }
-
-        $command = vsprintf($cmdPattern, $cmdArgs);
 
         return $cb
             ->addCode(function () use ($command, $php) {
@@ -503,11 +493,11 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
                     '<question>[{name}]</question> runs <info>{command}</info>',
                     [
                         '{name}' => 'Codeception',
-                        '{command}' => $command,
+                        '{command}' => implode(' ', $command),
                     ]
                 ));
 
-                $process = Process::fromShellCommandline(
+                $process = new Process(
                     $command,
                     null,
                     $php['envVars'] ?? null,
@@ -515,7 +505,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
                     null,
                 );
 
-                return $process->run(function ($type, $data) {
+                return $process->run(function ($type, $data): void {
                     switch ($type) {
                         case Process::OUT:
                             $this->output()->write($data);
@@ -588,6 +578,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         /** @var \Sweetchuck\LintReport\Reporter\VerboseReporter $verboseReporter */
         $verboseReporter = $this->getContainer()->get('lintVerboseReporter');
         $verboseReporter->setFilePathStyle('relative');
+        $verboseReporter->showSource(true);
 
         return $this
             ->taskPhpstanAnalyze()

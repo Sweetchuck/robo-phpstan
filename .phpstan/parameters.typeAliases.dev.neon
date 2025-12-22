@@ -3,8 +3,9 @@ parameters:
 		dev-php-executable: '''
 			array{
 				enabled: bool,
-				command: string,
 				envVars?: array<string, ?string>,
+				command: string,
+				arguments?: array<string, ?string>,
 			}
 		'''
 		dev-process-result: '''

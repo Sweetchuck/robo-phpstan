@@ -97,7 +97,6 @@ class ReportWrapperTest extends Unit
             $this->tester->assertSame($file['errors'], $fw->numOfErrors());
             $this->tester->assertSame(0, $fw->numOfWarnings());
             $this->tester->assertSame('error', $fw->highestSeverity());
-            //$this->tester->assertSame($file['__stats'], $fw->stats());
 
             /**
              * @var int $i
@@ -106,7 +105,7 @@ class ReportWrapperTest extends Unit
             foreach ($fw->yieldFailures() as $i => $failureWrapper) {
                 $message = $file['messages'][$i];
                 $this->tester->assertSame('error', $failureWrapper->severity());
-                //$this->tester->assertSame($message['source'], $failureWrapper->source());
+                $this->tester->assertSame($message['identifier'] ?? '', $failureWrapper->source());
                 $this->tester->assertSame($message['line'] ?? 0, $failureWrapper->line());
                 $this->tester->assertSame(0, $failureWrapper->column());
                 $this->tester->assertSame($message['message'], $failureWrapper->message());

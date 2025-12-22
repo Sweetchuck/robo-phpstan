@@ -12,7 +12,7 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method Robo\\\\Collection\\\\CollectionBuilder\\|Robo\\\\Task\\\\Filesystem\\\\FilesystemStack\\:\\:mkdir\\(\\)\\.$#"
-			count: 4
+			count: 5
 			path: ../RoboFile.php
 
 		-

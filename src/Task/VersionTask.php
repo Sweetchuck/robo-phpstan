@@ -24,6 +24,7 @@ class VersionTask extends ExecTaskBase
 
     protected function runProcessOutputs(): static
     {
+        // @phpstan-ignore-next-line staticMethod.resultUnused
         parent::runProcessOutputs();
 
         $parts = explode(' ', trim($this->actionStdOutput));
