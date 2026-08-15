@@ -237,9 +237,9 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
     {
         $cb = $this->collectionBuilder();
 
-        // @phpstan-ignore-next-line method.notFound
         $taskPhpstanGeneratePhp = $this
             ->taskPhpstanGeneratePhp()
+            // @phpstan-ignore-next-line method.notFound
             ->setSrcFiles(
                 (new Finder())
                     ->in('./.phpstan')
